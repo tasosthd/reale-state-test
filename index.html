@@ -28,6 +28,7 @@
       --accent-dark: #006f86;
       --gold: #c89542;
       --danger: #d94141;
+      --success: #16a56f;
       --border: rgba(255, 255, 255, 0.75);
       --shadow: 0 28px 90px rgba(9, 48, 61, 0.16);
       --shadow-soft: 0 16px 45px rgba(9, 48, 61, 0.1);
@@ -43,6 +44,10 @@
       color: var(--text);
       font-family: "Manrope", system-ui, sans-serif;
       padding: 22px;
+    }
+
+    body.modal-open {
+      overflow: hidden;
     }
 
     .page {
@@ -351,6 +356,12 @@
       margin-bottom: 20px;
     }
 
+    .featured-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
     .controls {
       display: grid;
       grid-template-columns: 1.4fr 0.8fr 0.8fr;
@@ -514,10 +525,35 @@
       box-shadow: 0 16px 38px rgba(0, 168, 200, 0.28);
       transition: 0.2s ease;
       font-family: inherit;
+      text-align: center;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
     }
 
     .btn:hover {
       transform: translateY(-2px);
+    }
+
+    .btn.secondary-btn {
+      background: rgba(255, 255, 255, 0.78);
+      color: var(--accent-dark);
+      border: 1px solid var(--border);
+      box-shadow: 0 12px 32px rgba(9, 48, 61, 0.1);
+    }
+
+    .btn.whatsapp-btn {
+      background: linear-gradient(135deg, #25d366, #128c7e);
+      color: white;
+      box-shadow: 0 16px 38px rgba(18, 140, 126, 0.24);
+    }
+
+    .card-actions {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
     }
 
     .message {
@@ -530,6 +566,145 @@
       color: var(--muted);
       font-weight: 850;
       box-shadow: var(--shadow);
+    }
+
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 1000;
+      display: none;
+      place-items: center;
+      padding: 22px;
+      background: rgba(5, 26, 34, 0.56);
+      backdrop-filter: blur(18px);
+    }
+
+    .modal-overlay.active {
+      display: grid;
+    }
+
+    .property-modal {
+      width: min(1040px, 100%);
+      max-height: min(880px, 92vh);
+      overflow: auto;
+      border-radius: 34px;
+      background:
+        radial-gradient(circle at top left, rgba(0, 188, 220, 0.12), transparent 32%),
+        rgba(255, 255, 255, 0.9);
+      border: 1px solid rgba(255, 255, 255, 0.76);
+      box-shadow: 0 34px 120px rgba(0, 0, 0, 0.28);
+      position: relative;
+      animation: modalIn 0.22s ease;
+    }
+
+    @keyframes modalIn {
+      from {
+        opacity: 0;
+        transform: translateY(18px) scale(0.98);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      width: 44px;
+      height: 44px;
+      border-radius: 16px;
+      border: 1px solid rgba(255, 255, 255, 0.75);
+      background: rgba(255, 255, 255, 0.86);
+      color: var(--text);
+      font-size: 1.25rem;
+      font-weight: 950;
+      cursor: pointer;
+      z-index: 3;
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12);
+      transition: 0.2s ease;
+    }
+
+    .modal-close:hover {
+      transform: translateY(-2px);
+      background: white;
+    }
+
+    .modal-grid {
+      display: grid;
+      grid-template-columns: 1.08fr 0.92fr;
+      min-height: 540px;
+    }
+
+    .modal-image {
+      min-height: 540px;
+      background: linear-gradient(135deg, #c9f0f7, #ffffff);
+      overflow: hidden;
+    }
+
+    .modal-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .modal-content {
+      padding: 34px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .modal-label {
+      width: fit-content;
+      padding: 9px 13px;
+      border-radius: 999px;
+      background: rgba(0, 168, 200, 0.11);
+      color: var(--accent-dark);
+      font-weight: 950;
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 16px;
+    }
+
+    .modal-content h3 {
+      font-family: "Geologica", sans-serif;
+      font-size: clamp(2rem, 5vw, 3.4rem);
+      line-height: 0.96;
+      letter-spacing: -0.08em;
+      margin-bottom: 12px;
+    }
+
+    .modal-price {
+      color: var(--accent-dark);
+      font-size: 1.8rem;
+      font-weight: 950;
+      letter-spacing: -0.05em;
+      margin-bottom: 12px;
+    }
+
+    .modal-location {
+      color: var(--muted);
+      font-weight: 850;
+      margin-bottom: 16px;
+    }
+
+    .modal-description {
+      color: var(--muted);
+      line-height: 1.75;
+      margin: 2px 0 20px;
+      font-weight: 650;
+    }
+
+    .modal-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-top: 6px;
     }
 
     @media (max-width: 960px) {
@@ -558,11 +733,13 @@
         align-items: flex-start;
       }
 
-      .featured-card {
+      .featured-card,
+      .modal-grid {
         grid-template-columns: 1fr;
       }
 
-      .featured-image {
+      .featured-image,
+      .modal-image {
         min-height: 320px;
       }
 
@@ -572,6 +749,10 @@
 
       .grid {
         grid-template-columns: repeat(2, 1fr);
+      }
+
+      .modal-content {
+        padding: 26px;
       }
     }
 
@@ -618,6 +799,25 @@
 
       .featured-content {
         padding: 24px;
+      }
+
+      .featured-actions,
+      .modal-actions {
+        grid-template-columns: 1fr;
+      }
+
+      .modal-overlay {
+        padding: 12px;
+      }
+
+      .property-modal {
+        border-radius: 26px;
+        max-height: 94vh;
+      }
+
+      .modal-close {
+        top: 10px;
+        right: 10px;
       }
     }
   </style>
@@ -731,9 +931,16 @@
 
   </main>
 
+  <div class="modal-overlay" id="propertyModalOverlay" aria-hidden="true">
+    <article class="property-modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+      <button class="modal-close" type="button" id="modalCloseBtn" aria-label="Close modal">×</button>
+      <div id="modalContent"></div>
+    </article>
+  </div>
+
   <script>
     const SUPABASE_URL = "https://cimfawulbmvorlopibcr.supabase.co";
-    const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNpbWZhd3VsYm12b3Jsb3BpYmNyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg2Njc1NDcsImV4cCI6MjA5NDI0MzU0N30.ZnhexIrwlOKz0L832j1v-2lNXetVXNu3-0ceQ6MfROY";
+    const SUPABASE_ANON_KEY = "YOUR_SUPABASE_ANON_KEY";
 
     const client = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
@@ -750,6 +957,11 @@
     const featuredCount = document.getElementById("featuredCount");
 
     const langBtn = document.getElementById("langBtn");
+    const propertyModalOverlay = document.getElementById("propertyModalOverlay");
+    const modalContent = document.getElementById("modalContent");
+    const modalCloseBtn = document.getElementById("modalCloseBtn");
+
+    const WHATSAPP_NUMBER = "306900000000";
 
     let allProperties = [];
     let currentLang = localStorage.getItem("prestige_lang") || "el";
@@ -789,6 +1001,9 @@
         featuredBadge: "Προτεινόμενο",
         featuredListing: "Προτεινόμενη Καταχώρηση",
         askProperty: "Ρώτα για αυτό το ακίνητο",
+        viewDetails: "Προβολή λεπτομερειών",
+        emailAction: "Email",
+        whatsappAction: "WhatsApp",
         priceOnRequest: "Τιμή κατόπιν ζήτησης",
         unknownLocation: "Άγνωστη τοποθεσία",
         untitledProperty: "Ακίνητο χωρίς τίτλο",
@@ -798,7 +1013,9 @@
         beds: "δωμ.",
         baths: "μπάνια",
         inquirySubject: "Ερώτηση για ακίνητο",
-        inquiryBody: "Γεια σας, ενδιαφέρομαι για αυτό το ακίνητο:"
+        inquiryBody: "Γεια σας, ενδιαφέρομαι για αυτό το ακίνητο:",
+        modalLabel: "Λεπτομέρειες ακινήτου",
+        whatsappMessage: "Γεια σας, ενδιαφέρομαι για αυτό το ακίνητο:"
       },
       en: {
         pageTitle: "Real Estate Showcase",
@@ -834,6 +1051,9 @@
         featuredBadge: "Featured",
         featuredListing: "Featured Listing",
         askProperty: "Ask for this property",
+        viewDetails: "View details",
+        emailAction: "Email",
+        whatsappAction: "WhatsApp",
         priceOnRequest: "Price on request",
         unknownLocation: "Unknown location",
         untitledProperty: "Untitled Property",
@@ -843,7 +1063,9 @@
         beds: "beds",
         baths: "baths",
         inquirySubject: "Property inquiry",
-        inquiryBody: "Hello, I am interested in this property:"
+        inquiryBody: "Hello, I am interested in this property:",
+        modalLabel: "Property details",
+        whatsappMessage: "Hello, I am interested in this property:"
       }
     };
 
@@ -985,6 +1207,25 @@
       }).length;
     }
 
+    function createMetaHTML(property) {
+      const rawStatus = property.status || "Available";
+      const status = escapeText(translateValue(rawStatus));
+      const propertyType = escapeText(translateValue(property.property_type || ""));
+      const listingType = escapeText(translateValue(property.listing_type || ""));
+      const size = escapeText(property.size || "");
+
+      return `
+        <div class="meta">
+          <span>${status}</span>
+          ${property.bedrooms ? `<span>🛏 ${property.bedrooms} ${t("beds")}</span>` : ""}
+          ${property.bathrooms ? `<span>🛁 ${property.bathrooms} ${t("baths")}</span>` : ""}
+          ${size ? `<span>📐 ${size}</span>` : ""}
+          ${propertyType ? `<span>${propertyType}</span>` : ""}
+          ${listingType ? `<span>${listingType}</span>` : ""}
+        </div>
+      `;
+    }
+
     function createFeaturedProperty(property) {
       if (!property) {
         featuredShowcase.innerHTML = `
@@ -998,11 +1239,8 @@
       const title = escapeText(property.title || t("untitledProperty"));
       const location = escapeText(property.location || t("unknownLocation"));
       const description = escapeText(property.description || t("noDescription"));
-      const status = escapeText(translateValue(property.status || "Available"));
-      const propertyType = escapeText(translateValue(property.property_type || ""));
-      const listingType = escapeText(translateValue(property.listing_type || ""));
-      const size = escapeText(property.size || "");
       const imageUrl = getImageUrl(property);
+      const propertyId = escapeText(property.id);
 
       featuredShowcase.innerHTML = `
         <article class="featured-card">
@@ -1019,20 +1257,19 @@
 
             <div class="featured-location">📍 ${location}</div>
 
-            <div class="meta">
-              <span>${status}</span>
-              ${property.bedrooms ? `<span>🛏 ${property.bedrooms} ${t("beds")}</span>` : ""}
-              ${property.bathrooms ? `<span>🛁 ${property.bathrooms} ${t("baths")}</span>` : ""}
-              ${size ? `<span>📐 ${size}</span>` : ""}
-              ${propertyType ? `<span>${propertyType}</span>` : ""}
-              ${listingType ? `<span>${listingType}</span>` : ""}
-            </div>
+            ${createMetaHTML(property)}
 
             <p class="featured-desc">${description}</p>
 
-            <button class="btn" onclick="contactProperty('${title}')">
-              ${t("askProperty")}
-            </button>
+            <div class="featured-actions">
+              <button class="btn secondary-btn" onclick="openPropertyModal('${propertyId}')">
+                ${t("viewDetails")}
+              </button>
+
+              <button class="btn" onclick="contactProperty('${title}')">
+                ${t("emailAction")}
+              </button>
+            </div>
           </div>
         </article>
       `;
@@ -1044,10 +1281,8 @@
       const description = escapeText(property.description || t("noDescription"));
       const rawStatus = property.status || "Available";
       const status = escapeText(translateValue(rawStatus));
-      const propertyType = escapeText(translateValue(property.property_type || ""));
-      const listingType = escapeText(translateValue(property.listing_type || ""));
-      const size = escapeText(property.size || "");
       const imageUrl = getImageUrl(property);
+      const propertyId = escapeText(property.id);
 
       const featuredBadge = property.featured
         ? `<span class="badge">${t("featuredBadge")}</span>`
@@ -1071,19 +1306,15 @@
 
             <p class="location">📍 ${location}</p>
 
-            <div class="meta">
-              ${property.bedrooms ? `<span>🛏 ${property.bedrooms} ${t("beds")}</span>` : ""}
-              ${property.bathrooms ? `<span>🛁 ${property.bathrooms} ${t("baths")}</span>` : ""}
-              ${size ? `<span>📐 ${size}</span>` : ""}
-              ${propertyType ? `<span>${propertyType}</span>` : ""}
-              ${listingType ? `<span>${listingType}</span>` : ""}
-            </div>
+            ${createMetaHTML(property)}
 
             <p class="description">${description}</p>
 
-            <button class="btn" onclick="contactProperty('${title}')">
-              ${t("askProperty")}
-            </button>
+            <div class="card-actions">
+              <button class="btn" onclick="openPropertyModal('${propertyId}')">
+                ${t("viewDetails")}
+              </button>
+            </div>
           </div>
         </article>
       `;
@@ -1190,6 +1421,64 @@
       window.location.href = `mailto:${email}?subject=${subject}&body=${body}`;
     }
 
+    function contactPropertyWhatsApp(title) {
+      const message = encodeURIComponent(`${t("whatsappMessage")} ${title}`);
+      window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${message}`, "_blank");
+    }
+
+    function openPropertyModal(propertyId) {
+      const property = allProperties.find((item) => item.id === propertyId);
+
+      if (!property) return;
+
+      const title = escapeText(property.title || t("untitledProperty"));
+      const location = escapeText(property.location || t("unknownLocation"));
+      const description = escapeText(property.description || t("noDescription"));
+      const imageUrl = getImageUrl(property);
+
+      modalContent.innerHTML = `
+        <div class="modal-grid">
+          <div class="modal-image">
+            <img src="${imageUrl}" alt="${title}">
+          </div>
+
+          <div class="modal-content">
+            <div class="modal-label">${t("modalLabel")}</div>
+
+            <h3 id="modalTitle">${title}</h3>
+
+            <div class="modal-price">${formatPrice(property.price)}</div>
+
+            <div class="modal-location">📍 ${location}</div>
+
+            ${createMetaHTML(property)}
+
+            <p class="modal-description">${description}</p>
+
+            <div class="modal-actions">
+              <button class="btn" onclick="contactProperty('${title}')">
+                ${t("emailAction")}
+              </button>
+
+              <button class="btn whatsapp-btn" onclick="contactPropertyWhatsApp('${title}')">
+                ${t("whatsappAction")}
+              </button>
+            </div>
+          </div>
+        </div>
+      `;
+
+      propertyModalOverlay.classList.add("active");
+      propertyModalOverlay.setAttribute("aria-hidden", "false");
+      document.body.classList.add("modal-open");
+    }
+
+    function closePropertyModal() {
+      propertyModalOverlay.classList.remove("active");
+      propertyModalOverlay.setAttribute("aria-hidden", "true");
+      document.body.classList.remove("modal-open");
+    }
+
     function scrollToListings() {
       document.getElementById("listingsSection").scrollIntoView({
         behavior: "smooth"
@@ -1206,6 +1495,20 @@
       currentLang = currentLang === "el" ? "en" : "el";
       localStorage.setItem("prestige_lang", currentLang);
       applyLanguage();
+    });
+
+    modalCloseBtn.addEventListener("click", closePropertyModal);
+
+    propertyModalOverlay.addEventListener("click", (event) => {
+      if (event.target === propertyModalOverlay) {
+        closePropertyModal();
+      }
+    });
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape") {
+        closePropertyModal();
+      }
     });
 
     searchInput.addEventListener("input", renderProperties);
