@@ -1,84 +1,339 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="el">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <title>Real Estate Listings</title>
+  <title>Real Estate Showcase</title>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Geologica:wght@400;500;600;700;800;900&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
   <style>
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
-      font-family: "Poppins", sans-serif;
     }
 
     :root {
       --bg: #eef8fb;
+      --bg-2: #dff4f8;
       --card: rgba(255, 255, 255, 0.72);
-      --text: #102027;
-      --muted: #687a82;
+      --card-strong: rgba(255, 255, 255, 0.9);
+      --text: #0b2028;
+      --muted: #63777f;
       --accent: #00a8c8;
       --accent-dark: #006f86;
-      --border: rgba(255, 255, 255, 0.7);
-      --shadow: 0 26px 80px rgba(9, 48, 61, 0.16);
+      --gold: #c89542;
       --danger: #d94141;
-      --gold: #b7791f;
+      --border: rgba(255, 255, 255, 0.75);
+      --shadow: 0 28px 90px rgba(9, 48, 61, 0.16);
+      --shadow-soft: 0 16px 45px rgba(9, 48, 61, 0.1);
     }
 
     body {
       min-height: 100vh;
       background:
-        radial-gradient(circle at top left, rgba(0, 188, 220, 0.26), transparent 34%),
+        radial-gradient(circle at top left, rgba(0, 188, 220, 0.25), transparent 34%),
+        radial-gradient(circle at 88% 10%, rgba(255, 255, 255, 0.8), transparent 22%),
         radial-gradient(circle at bottom right, rgba(0, 95, 120, 0.16), transparent 35%),
-        var(--bg);
+        linear-gradient(135deg, var(--bg), var(--bg-2));
       color: var(--text);
-      padding: 24px;
+      font-family: "Manrope", system-ui, sans-serif;
+      padding: 22px;
     }
 
     .page {
-      width: min(1180px, 100%);
+      width: min(1220px, 100%);
       margin: 0 auto;
     }
 
-    header {
-      padding: 30px 0 34px;
+    .topbar {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      gap: 24px;
+      gap: 18px;
+      padding: 16px 0 28px;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 900;
+      letter-spacing: -0.04em;
+      font-family: "Geologica", sans-serif;
+    }
+
+    .logo-mark {
+      width: 46px;
+      height: 46px;
+      border-radius: 16px;
+      background: linear-gradient(135deg, var(--accent), var(--accent-dark));
+      display: grid;
+      place-items: center;
+      color: white;
+      box-shadow: 0 16px 36px rgba(0, 168, 200, 0.35);
+      font-size: 1.2rem;
+    }
+
+    .top-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .pill {
+      padding: 12px 16px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.68);
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow-soft);
+      color: var(--accent-dark);
+      font-weight: 900;
+      font-size: 0.9rem;
+      white-space: nowrap;
+    }
+
+    .hero {
+      position: relative;
+      overflow: hidden;
+      border-radius: 42px;
+      min-height: 520px;
+      padding: 34px;
+      background:
+        linear-gradient(90deg, rgba(6, 33, 42, 0.84), rgba(6, 33, 42, 0.38), rgba(6, 33, 42, 0.12)),
+        url("https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=1800&q=90");
+      background-size: cover;
+      background-position: center;
+      box-shadow: var(--shadow);
+      border: 1px solid rgba(255, 255, 255, 0.35);
+      display: flex;
+      align-items: flex-end;
+    }
+
+    .hero::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(circle at 22% 20%, rgba(0, 188, 220, 0.25), transparent 28%),
+        linear-gradient(0deg, rgba(0, 0, 0, 0.28), transparent 45%);
+      pointer-events: none;
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      max-width: 760px;
+      color: white;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 9px 13px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.16);
+      border: 1px solid rgba(255, 255, 255, 0.24);
+      backdrop-filter: blur(16px);
+      font-weight: 900;
+      margin-bottom: 18px;
+      font-size: 0.82rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
     }
 
     .hero h1 {
-      font-size: clamp(2.4rem, 6vw, 5rem);
-      line-height: 0.92;
-      letter-spacing: -0.08em;
+      font-family: "Geologica", sans-serif;
+      font-size: clamp(2.8rem, 7vw, 6.5rem);
+      line-height: 0.9;
+      letter-spacing: -0.09em;
       font-weight: 900;
-      max-width: 740px;
+      margin-bottom: 18px;
     }
 
     .hero p {
-      margin-top: 18px;
       max-width: 620px;
-      color: var(--muted);
-      line-height: 1.7;
+      line-height: 1.75;
+      color: rgba(255, 255, 255, 0.86);
       font-size: 1rem;
+      margin-bottom: 24px;
     }
 
-    .cms-pill {
-      padding: 13px 18px;
-      border-radius: 999px;
-      background: rgba(255, 255, 255, 0.7);
+    .hero-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .hero-btn {
+      border: none;
+      cursor: pointer;
+      padding: 15px 18px;
+      border-radius: 18px;
+      font-weight: 900;
+      font-size: 0.95rem;
+      transition: 0.2s ease;
+    }
+
+    .hero-btn.primary {
+      background: linear-gradient(135deg, var(--accent), var(--accent-dark));
+      color: white;
+      box-shadow: 0 18px 38px rgba(0, 168, 200, 0.35);
+    }
+
+    .hero-btn.secondary {
+      background: rgba(255, 255, 255, 0.18);
+      color: white;
+      border: 1px solid rgba(255, 255, 255, 0.28);
+      backdrop-filter: blur(14px);
+    }
+
+    .hero-btn:hover {
+      transform: translateY(-2px);
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin: -42px 28px 34px;
+      position: relative;
+      z-index: 4;
+    }
+
+    .stat {
+      padding: 20px;
+      border-radius: 26px;
+      background: rgba(255, 255, 255, 0.78);
       border: 1px solid var(--border);
-      box-shadow: 0 16px 45px rgba(9, 48, 61, 0.12);
+      box-shadow: var(--shadow-soft);
+      backdrop-filter: blur(18px);
+    }
+
+    .stat strong {
+      display: block;
+      font-family: "Geologica", sans-serif;
+      font-size: 2rem;
+      letter-spacing: -0.06em;
       color: var(--accent-dark);
+      margin-bottom: 4px;
+    }
+
+    .stat span {
+      color: var(--muted);
       font-weight: 800;
-      white-space: nowrap;
+      font-size: 0.86rem;
+    }
+
+    .section-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: end;
+      gap: 18px;
+      margin: 34px 0 18px;
+    }
+
+    .section-head h2 {
+      font-family: "Geologica", sans-serif;
+      font-size: clamp(2rem, 4vw, 3.6rem);
+      line-height: 0.95;
+      letter-spacing: -0.08em;
+      font-weight: 900;
+    }
+
+    .section-head p {
+      color: var(--muted);
+      line-height: 1.6;
+      max-width: 470px;
+      font-weight: 600;
+    }
+
+    .featured-showcase {
+      margin-bottom: 34px;
+    }
+
+    .featured-card {
+      overflow: hidden;
+      border-radius: 34px;
+      background: rgba(255, 255, 255, 0.72);
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(20px);
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      min-height: 420px;
+    }
+
+    .featured-image {
+      min-height: 420px;
+      background: linear-gradient(135deg, #c9f0f7, #fff);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .featured-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: 0.35s ease;
+    }
+
+    .featured-card:hover .featured-image img {
+      transform: scale(1.04);
+    }
+
+    .featured-content {
+      padding: 34px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .featured-label {
+      width: fit-content;
+      padding: 9px 13px;
+      border-radius: 999px;
+      background: rgba(200, 149, 66, 0.14);
+      color: var(--gold);
+      font-weight: 950;
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 18px;
+    }
+
+    .featured-content h3 {
+      font-family: "Geologica", sans-serif;
+      font-size: clamp(1.8rem, 4vw, 3.4rem);
+      line-height: 0.98;
+      letter-spacing: -0.08em;
+      margin-bottom: 12px;
+    }
+
+    .featured-price {
+      color: var(--accent-dark);
+      font-size: 1.7rem;
+      font-weight: 950;
+      letter-spacing: -0.05em;
+      margin-bottom: 12px;
+    }
+
+    .featured-location {
+      color: var(--muted);
+      font-weight: 800;
+      margin-bottom: 16px;
+    }
+
+    .featured-desc {
+      color: var(--muted);
+      line-height: 1.75;
+      margin-bottom: 20px;
     }
 
     .controls {
@@ -91,7 +346,7 @@
     .control {
       width: 100%;
       border: 1px solid var(--border);
-      background: rgba(255, 255, 255, 0.7);
+      background: rgba(255, 255, 255, 0.72);
       backdrop-filter: blur(18px);
       border-radius: 18px;
       padding: 15px 16px;
@@ -99,12 +354,13 @@
       color: var(--text);
       outline: none;
       box-shadow: 0 14px 36px rgba(9, 48, 61, 0.08);
+      font-weight: 700;
     }
 
     .status-text {
       margin-bottom: 22px;
       color: var(--muted);
-      font-weight: 700;
+      font-weight: 800;
     }
 
     .grid {
@@ -166,7 +422,7 @@
       background: rgba(255, 255, 255, 0.88);
       color: var(--accent-dark);
       font-size: 0.76rem;
-      font-weight: 900;
+      font-weight: 950;
       box-shadow: 0 12px 28px rgba(0, 0, 0, 0.12);
     }
 
@@ -184,23 +440,26 @@
 
     .price {
       font-size: 1.65rem;
-      font-weight: 900;
+      font-weight: 950;
       letter-spacing: -0.05em;
       color: var(--accent-dark);
       margin-bottom: 8px;
     }
 
     .title {
-      font-size: 1.18rem;
-      font-weight: 850;
+      font-family: "Geologica", sans-serif;
+      font-size: 1.2rem;
+      font-weight: 900;
       line-height: 1.25;
       margin-bottom: 8px;
+      letter-spacing: -0.04em;
     }
 
     .location {
       color: var(--muted);
       font-size: 0.92rem;
       margin-bottom: 15px;
+      font-weight: 700;
     }
 
     .meta {
@@ -216,7 +475,7 @@
       background: rgba(255, 255, 255, 0.78);
       color: var(--text);
       font-size: 0.8rem;
-      font-weight: 800;
+      font-weight: 850;
     }
 
     .description {
@@ -235,7 +494,7 @@
       background: linear-gradient(135deg, var(--accent), var(--accent-dark));
       color: white;
       font-size: 0.95rem;
-      font-weight: 900;
+      font-weight: 950;
       box-shadow: 0 16px 38px rgba(0, 168, 200, 0.28);
       transition: 0.2s ease;
     }
@@ -252,14 +511,37 @@
       background: rgba(255, 255, 255, 0.64);
       border: 1px solid var(--border);
       color: var(--muted);
-      font-weight: 800;
+      font-weight: 850;
       box-shadow: var(--shadow);
     }
 
     @media (max-width: 960px) {
-      header {
+      .topbar {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .hero {
+        min-height: 560px;
+        padding: 24px;
+      }
+
+      .stats {
+        grid-template-columns: 1fr;
+        margin: 18px 0 34px;
+      }
+
+      .section-head {
         flex-direction: column;
         align-items: flex-start;
+      }
+
+      .featured-card {
+        grid-template-columns: 1fr;
+      }
+
+      .featured-image {
+        min-height: 320px;
       }
 
       .controls {
@@ -273,14 +555,27 @@
 
     @media (max-width: 640px) {
       body {
-        padding: 16px;
+        padding: 14px;
+      }
+
+      .hero {
+        border-radius: 30px;
+        min-height: 590px;
       }
 
       .hero h1 {
-        font-size: 3rem;
+        font-size: 3.25rem;
       }
 
-      .cms-pill {
+      .hero-buttons {
+        flex-direction: column;
+      }
+
+      .hero-btn {
+        width: 100%;
+      }
+
+      .pill {
         width: 100%;
         text-align: center;
       }
@@ -292,23 +587,90 @@
       .image-wrap {
         height: 255px;
       }
+
+      .featured-content {
+        padding: 24px;
+      }
     }
   </style>
 </head>
 
 <body>
   <main class="page">
-    <header>
-      <section class="hero">
-        <h1>Premium Real Estate Listings</h1>
-        <p>
-          Properties are loaded directly from Supabase. Add images, prices, locations,
-          and details in your Supabase dashboard — this page updates automatically.
-        </p>
-      </section>
 
-      <div class="cms-pill">Supabase CMS Active</div>
-    </header>
+    <nav class="topbar">
+      <div class="logo">
+        <div class="logo-mark">⌂</div>
+        <div>
+          <div>Prestige Realty</div>
+          <small style="color: var(--muted); font-weight: 800;">Supabase Property CMS</small>
+        </div>
+      </div>
+
+      <div class="top-actions">
+        <div class="pill">Live Listings</div>
+      </div>
+    </nav>
+
+    <section class="hero">
+      <div class="hero-content">
+        <div class="eyebrow">Premium Real Estate Showcase</div>
+
+        <h1>Find your next luxury property.</h1>
+
+        <p>
+          Δες διαθέσιμα ακίνητα με φωτογραφίες, τιμές και πληροφορίες.
+          Η βιτρίνα ενημερώνεται αυτόματα από Supabase χωρίς να πειράζεις κώδικα.
+        </p>
+
+        <div class="hero-buttons">
+          <button class="hero-btn primary" onclick="scrollToListings()">View Properties</button>
+          <button class="hero-btn secondary" onclick="scrollToFeatured()">Featured Property</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="stats">
+      <div class="stat">
+        <strong id="totalCount">0</strong>
+        <span>Total Properties</span>
+      </div>
+
+      <div class="stat">
+        <strong id="availableCount">0</strong>
+        <span>Available Now</span>
+      </div>
+
+      <div class="stat">
+        <strong id="featuredCount">0</strong>
+        <span>Featured Listings</span>
+      </div>
+    </section>
+
+    <section class="section-head" id="featuredSection">
+      <div>
+        <h2>Featured property</h2>
+      </div>
+
+      <p>
+        Το καλύτερο ακίνητο μπαίνει πρώτο στη βιτρίνα. Στο Supabase κάνε το
+        πεδίο <strong>featured</strong> true και θα εμφανιστεί εδώ.
+      </p>
+    </section>
+
+    <section class="featured-showcase" id="featuredShowcase">
+      <div class="message">Loading featured property...</div>
+    </section>
+
+    <section class="section-head" id="listingsSection">
+      <div>
+        <h2>Property listings</h2>
+      </div>
+
+      <p>
+        Search, filter και ταξινόμηση για να δείχνει σαν κανονική real-estate πλατφόρμα.
+      </p>
+    </section>
 
     <section class="controls">
       <input
@@ -337,6 +699,7 @@
     <section class="grid" id="propertiesGrid">
       <div class="message">Loading properties...</div>
     </section>
+
   </main>
 
   <script>
@@ -346,10 +709,16 @@
     const client = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
     const propertiesGrid = document.getElementById("propertiesGrid");
+    const featuredShowcase = document.getElementById("featuredShowcase");
     const statusText = document.getElementById("statusText");
+
     const searchInput = document.getElementById("searchInput");
     const statusFilter = document.getElementById("statusFilter");
     const sortFilter = document.getElementById("sortFilter");
+
+    const totalCount = document.getElementById("totalCount");
+    const availableCount = document.getElementById("availableCount");
+    const featuredCount = document.getElementById("featuredCount");
 
     let allProperties = [];
 
@@ -360,7 +729,7 @@
         return "Price on request";
       }
 
-      return new Intl.NumberFormat("en-US", {
+      return new Intl.NumberFormat("el-GR", {
         style: "currency",
         currency: "EUR",
         maximumFractionDigits: 0
@@ -389,6 +758,75 @@
         .replaceAll("'", "&#039;");
     }
 
+    function getImageUrl(property) {
+      return property.image_url || getFallbackImage();
+    }
+
+    function updateStats() {
+      totalCount.textContent = allProperties.length;
+
+      availableCount.textContent = allProperties.filter((property) => {
+        return String(property.status || "").toLowerCase() === "available";
+      }).length;
+
+      featuredCount.textContent = allProperties.filter((property) => {
+        return Boolean(property.featured);
+      }).length;
+    }
+
+    function createFeaturedProperty(property) {
+      if (!property) {
+        featuredShowcase.innerHTML = `
+          <div class="message">
+            No featured property yet. Go to Supabase and set one property as featured.
+          </div>
+        `;
+        return;
+      }
+
+      const title = escapeText(property.title || "Untitled Property");
+      const location = escapeText(property.location || "Unknown location");
+      const description = escapeText(property.description || "No description added yet.");
+      const status = escapeText(property.status || "Available");
+      const propertyType = escapeText(property.property_type || "");
+      const listingType = escapeText(property.listing_type || "");
+      const size = escapeText(property.size || "");
+      const imageUrl = getImageUrl(property);
+
+      featuredShowcase.innerHTML = `
+        <article class="featured-card">
+          <div class="featured-image">
+            <img src="${imageUrl}" alt="${title}" loading="lazy">
+          </div>
+
+          <div class="featured-content">
+            <div class="featured-label">Featured Listing</div>
+
+            <h3>${title}</h3>
+
+            <div class="featured-price">${formatPrice(property.price)}</div>
+
+            <div class="featured-location">📍 ${location}</div>
+
+            <div class="meta">
+              <span>${status}</span>
+              ${property.bedrooms ? `<span>🛏 ${property.bedrooms} beds</span>` : ""}
+              ${property.bathrooms ? `<span>🛁 ${property.bathrooms} baths</span>` : ""}
+              ${size ? `<span>📐 ${size}</span>` : ""}
+              ${propertyType ? `<span>${propertyType}</span>` : ""}
+              ${listingType ? `<span>${listingType}</span>` : ""}
+            </div>
+
+            <p class="featured-desc">${description}</p>
+
+            <button class="btn" onclick="contactProperty('${title}')">
+              Ask for this property
+            </button>
+          </div>
+        </article>
+      `;
+    }
+
     function createPropertyCard(property) {
       const title = escapeText(property.title || "Untitled Property");
       const location = escapeText(property.location || "Unknown location");
@@ -397,7 +835,7 @@
       const propertyType = escapeText(property.property_type || "");
       const listingType = escapeText(property.listing_type || "");
       const size = escapeText(property.size || "");
-      const imageUrl = property.image_url || getFallbackImage();
+      const imageUrl = getImageUrl(property);
 
       const featuredBadge = property.featured
         ? `<span class="badge">Featured</span>`
@@ -437,6 +875,14 @@
           </div>
         </article>
       `;
+    }
+
+    function renderFeatured() {
+      const featuredProperty =
+        allProperties.find((property) => Boolean(property.featured)) ||
+        allProperties[0];
+
+      createFeaturedProperty(featuredProperty);
     }
 
     function renderProperties() {
@@ -487,6 +933,7 @@
 
     async function loadProperties() {
       propertiesGrid.innerHTML = `<div class="message">Loading properties...</div>`;
+      featuredShowcase.innerHTML = `<div class="message">Loading featured property...</div>`;
       statusText.textContent = "Loading properties...";
 
       const { data, error } = await client
@@ -506,10 +953,19 @@
           </div>
         `;
 
+        featuredShowcase.innerHTML = `
+          <div class="message">
+            Could not load featured property.
+          </div>
+        `;
+
         return;
       }
 
       allProperties = Array.isArray(data) ? data : [];
+
+      updateStats();
+      renderFeatured();
       renderProperties();
     }
 
@@ -519,6 +975,18 @@
       const body = encodeURIComponent(`Hello, I am interested in this property: ${title}`);
 
       window.location.href = `mailto:${email}?subject=${subject}&body=${body}`;
+    }
+
+    function scrollToListings() {
+      document.getElementById("listingsSection").scrollIntoView({
+        behavior: "smooth"
+      });
+    }
+
+    function scrollToFeatured() {
+      document.getElementById("featuredSection").scrollIntoView({
+        behavior: "smooth"
+      });
     }
 
     searchInput.addEventListener("input", renderProperties);
