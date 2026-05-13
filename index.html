@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Real Estate Listings</title>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: "Poppins", sans-serif;
+    }
+
+    :root {
+      --bg: #eef8fb;
+      --card: rgba(255, 255, 255, 0.72);
+      --text: #102027;
+      --muted: #687a82;
+      --accent: #00a8c8;
+      --accent-dark: #006f86;
+      --border: rgba(255, 255, 255, 0.7);
+      --shadow: 0 26px 80px rgba(9, 48, 61, 0.16);
+      --danger: #d94141;
+      --gold: #b7791f;
+    }
+
+    body {
+      min-height: 100vh;
+      background:
+        radial-gradient(circle at top left, rgba(0, 188, 220, 0.26), transparent 34%),
+        radial-gradient(circle at bottom right, rgba(0, 95, 120, 0.16), transparent 35%),
+        var(--bg);
+      color: var(--text);
+      padding: 24px;
+    }
+
+    .page {
+      width: min(1180px, 100%);
+      margin: 0 auto;
+    }
+
+    header {
+      padding: 30px 0 34px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 24px;
+    }
+
+    .hero h1 {
+      font-size: clamp(2.4rem, 6vw, 5rem);
+      line-height: 0.92;
+      letter-spacing: -0.08em;
+      font-weight: 900;
+      max-width: 740px;
+    }
+
+    .hero p {
+      margin-top: 18px;
+      max-width: 620px;
+      color: var(--muted);
+      line-height: 1.7;
+      font-size: 1rem;
+    }
+
+    .cms-pill {
+      padding: 13px 18px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.7);
+      border: 1px solid var(--border);
+      box-shadow: 0 16px 45px rgba(9, 48, 61, 0.12);
+      color: var(--accent-dark);
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .controls {
+      display: grid;
+      grid-template-columns: 1.4fr 0.8fr 0.8fr;
+      gap: 14px;
+      margin-bottom: 22px;
+    }
+
+    .control {
+      width: 100%;
+      border: 1px solid var(--border);
+      background: rgba(255, 255, 255, 0.7);
+      backdrop-filter: blur(18px);
+      border-radius: 18px;
+      padding: 15px 16px;
+      font-size: 0.95rem;
+      color: var(--text);
+      outline: none;
+      box-shadow: 0 14px 36px rgba(9, 48, 61, 0.08);
+    }
+
+    .status-text {
+      margin-bottom: 22px;
+      color: var(--muted);
+      font-weight: 700;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 22px;
+      padding-bottom: 70px;
+    }
+
+    .card {
+      position: relative;
+      overflow: hidden;
+      border-radius: 30px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(20px);
+      transition: 0.25s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-7px);
+      box-shadow: 0 34px 95px rgba(9, 48, 61, 0.22);
+    }
+
+    .image-wrap {
+      height: 235px;
+      position: relative;
+      overflow: hidden;
+      background: linear-gradient(135deg, #c9f0f7, #ffffff);
+    }
+
+    .image-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: 0.35s ease;
+    }
+
+    .card:hover .image-wrap img {
+      transform: scale(1.06);
+    }
+
+    .badges {
+      position: absolute;
+      top: 14px;
+      left: 14px;
+      right: 14px;
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      z-index: 2;
+    }
+
+    .badge {
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.88);
+      color: var(--accent-dark);
+      font-size: 0.76rem;
+      font-weight: 900;
+      box-shadow: 0 12px 28px rgba(0, 0, 0, 0.12);
+    }
+
+    .badge.sold {
+      color: var(--danger);
+    }
+
+    .badge.rented {
+      color: var(--gold);
+    }
+
+    .content {
+      padding: 22px;
+    }
+
+    .price {
+      font-size: 1.65rem;
+      font-weight: 900;
+      letter-spacing: -0.05em;
+      color: var(--accent-dark);
+      margin-bottom: 8px;
+    }
+
+    .title {
+      font-size: 1.18rem;
+      font-weight: 850;
+      line-height: 1.25;
+      margin-bottom: 8px;
+    }
+
+    .location {
+      color: var(--muted);
+      font-size: 0.92rem;
+      margin-bottom: 15px;
+    }
+
+    .meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 9px;
+      margin-bottom: 16px;
+    }
+
+    .meta span {
+      padding: 8px 11px;
+      border-radius: 14px;
+      background: rgba(255, 255, 255, 0.78);
+      color: var(--text);
+      font-size: 0.8rem;
+      font-weight: 800;
+    }
+
+    .description {
+      color: var(--muted);
+      line-height: 1.65;
+      font-size: 0.91rem;
+      margin-bottom: 18px;
+    }
+
+    .btn {
+      width: 100%;
+      border: none;
+      cursor: pointer;
+      padding: 14px 16px;
+      border-radius: 18px;
+      background: linear-gradient(135deg, var(--accent), var(--accent-dark));
+      color: white;
+      font-size: 0.95rem;
+      font-weight: 900;
+      box-shadow: 0 16px 38px rgba(0, 168, 200, 0.28);
+      transition: 0.2s ease;
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+    }
+
+    .message {
+      grid-column: 1 / -1;
+      padding: 46px 24px;
+      text-align: center;
+      border-radius: 28px;
+      background: rgba(255, 255, 255, 0.64);
+      border: 1px solid var(--border);
+      color: var(--muted);
+      font-weight: 800;
+      box-shadow: var(--shadow);
+    }
+
+    @media (max-width: 960px) {
+      header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .controls {
+        grid-template-columns: 1fr;
+      }
+
+      .grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 640px) {
+      body {
+        padding: 16px;
+      }
+
+      .hero h1 {
+        font-size: 3rem;
+      }
+
+      .cms-pill {
+        width: 100%;
+        text-align: center;
+      }
+
+      .grid {
+        grid-template-columns: 1fr;
+      }
+
+      .image-wrap {
+        height: 255px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <main class="page">
+    <header>
+      <section class="hero">
+        <h1>Premium Real Estate Listings</h1>
+        <p>
+          Properties are loaded directly from Supabase. Add images, prices, locations,
+          and details in your Supabase dashboard — this page updates automatically.
+        </p>
+      </section>
+
+      <div class="cms-pill">Supabase CMS Active</div>
+    </header>
+
+    <section class="controls">
+      <input
+        class="control"
+        id="searchInput"
+        type="text"
+        placeholder="Search by title or location..."
+      />
+
+      <select class="control" id="statusFilter">
+        <option value="all">All statuses</option>
+        <option value="Available">Available</option>
+        <option value="Sold">Sold</option>
+        <option value="Rented">Rented</option>
+      </select>
+
+      <select class="control" id="sortFilter">
+        <option value="featured">Featured first</option>
+        <option value="price-low">Price: low to high</option>
+        <option value="price-high">Price: high to low</option>
+      </select>
+    </section>
+
+    <p class="status-text" id="statusText">Loading properties...</p>
+
+    <section class="grid" id="propertiesGrid">
+      <div class="message">Loading properties...</div>
+    </section>
+  </main>
+
+  <script>
+    const SUPABASE_URL = "https://cimfawulbmvorlopibcr.supabase.co";
+    const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNpbWZhd3VsYm12b3Jsb3BpYmNyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg2Njc1NDcsImV4cCI6MjA5NDI0MzU0N30.ZnhexIrwlOKz0L832j1v-2lNXetVXNu3-0ceQ6MfROY";
+
+    const client = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    const propertiesGrid = document.getElementById("propertiesGrid");
+    const statusText = document.getElementById("statusText");
+    const searchInput = document.getElementById("searchInput");
+    const statusFilter = document.getElementById("statusFilter");
+    const sortFilter = document.getElementById("sortFilter");
+
+    let allProperties = [];
+
+    function formatPrice(price) {
+      const number = Number(price);
+
+      if (!number || Number.isNaN(number)) {
+        return "Price on request";
+      }
+
+      return new Intl.NumberFormat("en-US", {
+        style: "currency",
+        currency: "EUR",
+        maximumFractionDigits: 0
+      }).format(number);
+    }
+
+    function getFallbackImage() {
+      return "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=1200&q=80";
+    }
+
+    function getStatusClass(status) {
+      const value = String(status || "").toLowerCase();
+
+      if (value === "sold") return "sold";
+      if (value === "rented") return "rented";
+
+      return "";
+    }
+
+    function escapeText(value) {
+      return String(value ?? "")
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+    }
+
+    function createPropertyCard(property) {
+      const title = escapeText(property.title || "Untitled Property");
+      const location = escapeText(property.location || "Unknown location");
+      const description = escapeText(property.description || "No description added yet.");
+      const status = escapeText(property.status || "Available");
+      const propertyType = escapeText(property.property_type || "");
+      const listingType = escapeText(property.listing_type || "");
+      const size = escapeText(property.size || "");
+      const imageUrl = property.image_url || getFallbackImage();
+
+      const featuredBadge = property.featured
+        ? `<span class="badge">Featured</span>`
+        : `<span></span>`;
+
+      return `
+        <article class="card">
+          <div class="image-wrap">
+            <img src="${imageUrl}" alt="${title}" loading="lazy">
+
+            <div class="badges">
+              <span class="badge ${getStatusClass(status)}">${status}</span>
+              ${featuredBadge}
+            </div>
+          </div>
+
+          <div class="content">
+            <div class="price">${formatPrice(property.price)}</div>
+
+            <h2 class="title">${title}</h2>
+
+            <p class="location">📍 ${location}</p>
+
+            <div class="meta">
+              ${property.bedrooms ? `<span>🛏 ${property.bedrooms} beds</span>` : ""}
+              ${property.bathrooms ? `<span>🛁 ${property.bathrooms} baths</span>` : ""}
+              ${size ? `<span>📐 ${size}</span>` : ""}
+              ${propertyType ? `<span>${propertyType}</span>` : ""}
+              ${listingType ? `<span>${listingType}</span>` : ""}
+            </div>
+
+            <p class="description">${description}</p>
+
+            <button class="btn" onclick="contactProperty('${title}')">
+              Ask for this property
+            </button>
+          </div>
+        </article>
+      `;
+    }
+
+    function renderProperties() {
+      const searchValue = searchInput.value.toLowerCase().trim();
+      const selectedStatus = statusFilter.value;
+      const selectedSort = sortFilter.value;
+
+      let filtered = [...allProperties];
+
+      if (searchValue) {
+        filtered = filtered.filter((property) => {
+          const title = String(property.title || "").toLowerCase();
+          const location = String(property.location || "").toLowerCase();
+
+          return title.includes(searchValue) || location.includes(searchValue);
+        });
+      }
+
+      if (selectedStatus !== "all") {
+        filtered = filtered.filter((property) => property.status === selectedStatus);
+      }
+
+      if (selectedSort === "featured") {
+        filtered.sort((a, b) => Number(b.featured) - Number(a.featured));
+      }
+
+      if (selectedSort === "price-low") {
+        filtered.sort((a, b) => Number(a.price || 0) - Number(b.price || 0));
+      }
+
+      if (selectedSort === "price-high") {
+        filtered.sort((a, b) => Number(b.price || 0) - Number(a.price || 0));
+      }
+
+      statusText.textContent = `${filtered.length} propert${filtered.length === 1 ? "y" : "ies"} found`;
+
+      if (filtered.length === 0) {
+        propertiesGrid.innerHTML = `
+          <div class="message">
+            No properties found. Add more listings in Supabase or change your filters.
+          </div>
+        `;
+        return;
+      }
+
+      propertiesGrid.innerHTML = filtered.map(createPropertyCard).join("");
+    }
+
+    async function loadProperties() {
+      propertiesGrid.innerHTML = `<div class="message">Loading properties...</div>`;
+      statusText.textContent = "Loading properties...";
+
+      const { data, error } = await client
+        .from("properties")
+        .select("*")
+        .order("featured", { ascending: false })
+        .order("created_at", { ascending: false });
+
+      if (error) {
+        console.error(error);
+
+        statusText.textContent = "Could not load properties.";
+
+        propertiesGrid.innerHTML = `
+          <div class="message">
+            Supabase error: ${escapeText(error.message)}
+          </div>
+        `;
+
+        return;
+      }
+
+      allProperties = Array.isArray(data) ? data : [];
+      renderProperties();
+    }
+
+    function contactProperty(title) {
+      const email = "your-email@example.com";
+      const subject = encodeURIComponent(`Property inquiry: ${title}`);
+      const body = encodeURIComponent(`Hello, I am interested in this property: ${title}`);
+
+      window.location.href = `mailto:${email}?subject=${subject}&body=${body}`;
+    }
+
+    searchInput.addEventListener("input", renderProperties);
+    statusFilter.addEventListener("change", renderProperties);
+    sortFilter.addEventListener("change", renderProperties);
+
+    loadProperties();
+  </script>
+</body>
+</html>
