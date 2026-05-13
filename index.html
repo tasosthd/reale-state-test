@@ -83,9 +83,12 @@
       display: flex;
       align-items: center;
       gap: 10px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
     }
 
-    .pill {
+    .pill,
+    .lang-btn {
       padding: 12px 16px;
       border-radius: 999px;
       background: rgba(255, 255, 255, 0.68);
@@ -95,6 +98,17 @@
       font-weight: 900;
       font-size: 0.9rem;
       white-space: nowrap;
+    }
+
+    .lang-btn {
+      cursor: pointer;
+      transition: 0.2s ease;
+      font-family: inherit;
+    }
+
+    .lang-btn:hover {
+      transform: translateY(-2px);
+      background: rgba(255, 255, 255, 0.9);
     }
 
     .hero {
@@ -178,6 +192,7 @@
       font-weight: 900;
       font-size: 0.95rem;
       transition: 0.2s ease;
+      font-family: inherit;
     }
 
     .hero-btn.primary {
@@ -355,6 +370,7 @@
       outline: none;
       box-shadow: 0 14px 36px rgba(9, 48, 61, 0.08);
       font-weight: 700;
+      font-family: inherit;
     }
 
     .status-text {
@@ -497,6 +513,7 @@
       font-weight: 950;
       box-shadow: 0 16px 38px rgba(0, 168, 200, 0.28);
       transition: 0.2s ease;
+      font-family: inherit;
     }
 
     .btn:hover {
@@ -519,6 +536,11 @@
       .topbar {
         align-items: flex-start;
         flex-direction: column;
+      }
+
+      .top-actions {
+        width: 100%;
+        justify-content: flex-start;
       }
 
       .hero {
@@ -575,9 +597,15 @@
         width: 100%;
       }
 
-      .pill {
-        width: 100%;
+      .pill,
+      .lang-btn {
+        flex: 1;
         text-align: center;
+      }
+
+      .top-actions {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
       }
 
       .grid {
@@ -603,29 +631,30 @@
         <div class="logo-mark">⌂</div>
         <div>
           <div>Prestige Realty</div>
-          <small style="color: var(--muted); font-weight: 800;">Supabase Property CMS</small>
+          <small id="logoSubtitle" style="color: var(--muted); font-weight: 800;">Supabase Property CMS</small>
         </div>
       </div>
 
       <div class="top-actions">
-        <div class="pill">Live Listings</div>
+        <div class="pill" id="liveListingsText">Live Listings</div>
+        <button class="lang-btn" id="langBtn" type="button">EN</button>
       </div>
     </nav>
 
     <section class="hero">
       <div class="hero-content">
-        <div class="eyebrow">Premium Real Estate Showcase</div>
+        <div class="eyebrow" id="heroEyebrow">Premium Real Estate Showcase</div>
 
-        <h1>Find your next luxury property.</h1>
+        <h1 id="heroTitle">Βρες το επόμενο ακίνητό σου.</h1>
 
-        <p>
+        <p id="heroText">
           Δες διαθέσιμα ακίνητα με φωτογραφίες, τιμές και πληροφορίες.
           Η βιτρίνα ενημερώνεται αυτόματα από Supabase χωρίς να πειράζεις κώδικα.
         </p>
 
         <div class="hero-buttons">
-          <button class="hero-btn primary" onclick="scrollToListings()">View Properties</button>
-          <button class="hero-btn secondary" onclick="scrollToFeatured()">Featured Property</button>
+          <button class="hero-btn primary" id="viewPropertiesBtn" onclick="scrollToListings()">Δες Ακίνητα</button>
+          <button class="hero-btn secondary" id="featuredPropertyBtn" onclick="scrollToFeatured()">Προτεινόμενο Ακίνητο</button>
         </div>
       </div>
     </section>
@@ -633,42 +662,42 @@
     <section class="stats">
       <div class="stat">
         <strong id="totalCount">0</strong>
-        <span>Total Properties</span>
+        <span id="totalLabel">Σύνολο Ακινήτων</span>
       </div>
 
       <div class="stat">
         <strong id="availableCount">0</strong>
-        <span>Available Now</span>
+        <span id="availableLabel">Διαθέσιμα Τώρα</span>
       </div>
 
       <div class="stat">
         <strong id="featuredCount">0</strong>
-        <span>Featured Listings</span>
+        <span id="featuredLabel">Προτεινόμενες Καταχωρήσεις</span>
       </div>
     </section>
 
     <section class="section-head" id="featuredSection">
       <div>
-        <h2>Featured property</h2>
+        <h2 id="featuredHeading">Προτεινόμενο ακίνητο</h2>
       </div>
 
-      <p>
+      <p id="featuredText">
         Το καλύτερο ακίνητο μπαίνει πρώτο στη βιτρίνα. Στο Supabase κάνε το
         πεδίο <strong>featured</strong> true και θα εμφανιστεί εδώ.
       </p>
     </section>
 
     <section class="featured-showcase" id="featuredShowcase">
-      <div class="message">Loading featured property...</div>
+      <div class="message">Φόρτωση προτεινόμενου ακινήτου...</div>
     </section>
 
     <section class="section-head" id="listingsSection">
       <div>
-        <h2>Property listings</h2>
+        <h2 id="listingsHeading">Λίστα ακινήτων</h2>
       </div>
 
-      <p>
-        Search, filter και ταξινόμηση για να δείχνει σαν κανονική real-estate πλατφόρμα.
+      <p id="listingsText">
+        Αναζήτηση, φίλτρα και ταξινόμηση για να δείχνει σαν κανονική real-estate πλατφόρμα.
       </p>
     </section>
 
@@ -677,27 +706,27 @@
         class="control"
         id="searchInput"
         type="text"
-        placeholder="Search by title or location..."
+        placeholder="Αναζήτηση με τίτλο ή τοποθεσία..."
       />
 
       <select class="control" id="statusFilter">
-        <option value="all">All statuses</option>
-        <option value="Available">Available</option>
-        <option value="Sold">Sold</option>
-        <option value="Rented">Rented</option>
+        <option value="all">Όλες οι καταστάσεις</option>
+        <option value="Available">Διαθέσιμο</option>
+        <option value="Sold">Πουλήθηκε</option>
+        <option value="Rented">Ενοικιάστηκε</option>
       </select>
 
       <select class="control" id="sortFilter">
-        <option value="featured">Featured first</option>
-        <option value="price-low">Price: low to high</option>
-        <option value="price-high">Price: high to low</option>
+        <option value="featured">Προτεινόμενα πρώτα</option>
+        <option value="price-low">Τιμή: χαμηλή σε υψηλή</option>
+        <option value="price-high">Τιμή: υψηλή σε χαμηλή</option>
       </select>
     </section>
 
-    <p class="status-text" id="statusText">Loading properties...</p>
+    <p class="status-text" id="statusText">Φόρτωση ακινήτων...</p>
 
     <section class="grid" id="propertiesGrid">
-      <div class="message">Loading properties...</div>
+      <div class="message">Φόρτωση ακινήτων...</div>
     </section>
 
   </main>
@@ -720,16 +749,198 @@
     const availableCount = document.getElementById("availableCount");
     const featuredCount = document.getElementById("featuredCount");
 
+    const langBtn = document.getElementById("langBtn");
+
     let allProperties = [];
+    let currentLang = localStorage.getItem("prestige_lang") || "el";
+
+    const translations = {
+      el: {
+        pageTitle: "Real Estate Showcase",
+        langButton: "EN",
+        logoSubtitle: "Supabase Σύστημα Ακινήτων",
+        liveListings: "Live Ακίνητα",
+        heroEyebrow: "Premium Βιτρίνα Ακινήτων",
+        heroTitle: "Βρες το επόμενο ακίνητό σου.",
+        heroText: "Δες διαθέσιμα ακίνητα με φωτογραφίες, τιμές και πληροφορίες. Η βιτρίνα ενημερώνεται αυτόματα από Supabase χωρίς να πειράζεις κώδικα.",
+        viewProperties: "Δες Ακίνητα",
+        featuredProperty: "Προτεινόμενο Ακίνητο",
+        totalProperties: "Σύνολο Ακινήτων",
+        availableNow: "Διαθέσιμα Τώρα",
+        featuredListings: "Προτεινόμενες Καταχωρήσεις",
+        featuredHeading: "Προτεινόμενο ακίνητο",
+        featuredText: "Το καλύτερο ακίνητο μπαίνει πρώτο στη βιτρίνα. Στο Supabase κάνε το πεδίο <strong>featured</strong> true και θα εμφανιστεί εδώ.",
+        listingsHeading: "Λίστα ακινήτων",
+        listingsText: "Αναζήτηση, φίλτρα και ταξινόμηση για να δείχνει σαν κανονική real-estate πλατφόρμα.",
+        searchPlaceholder: "Αναζήτηση με τίτλο ή τοποθεσία...",
+        allStatuses: "Όλες οι καταστάσεις",
+        available: "Διαθέσιμο",
+        sold: "Πουλήθηκε",
+        rented: "Ενοικιάστηκε",
+        featuredFirst: "Προτεινόμενα πρώτα",
+        priceLow: "Τιμή: χαμηλή σε υψηλή",
+        priceHigh: "Τιμή: υψηλή σε χαμηλή",
+        loadingProperties: "Φόρτωση ακινήτων...",
+        loadingFeatured: "Φόρτωση προτεινόμενου ακινήτου...",
+        noFeatured: "Δεν υπάρχει ακόμα προτεινόμενο ακίνητο. Πήγαινε στο Supabase και κάνε ένα ακίνητο featured.",
+        noProperties: "Δεν βρέθηκαν ακίνητα. Πρόσθεσε περισσότερες καταχωρήσεις στο Supabase ή άλλαξε τα φίλτρα.",
+        couldNotLoad: "Δεν ήταν δυνατή η φόρτωση ακινήτων.",
+        couldNotLoadFeatured: "Δεν ήταν δυνατή η φόρτωση προτεινόμενου ακινήτου.",
+        featuredBadge: "Προτεινόμενο",
+        featuredListing: "Προτεινόμενη Καταχώρηση",
+        askProperty: "Ρώτα για αυτό το ακίνητο",
+        priceOnRequest: "Τιμή κατόπιν ζήτησης",
+        unknownLocation: "Άγνωστη τοποθεσία",
+        untitledProperty: "Ακίνητο χωρίς τίτλο",
+        noDescription: "Δεν έχει προστεθεί περιγραφή ακόμα.",
+        propertiesFound: "ακίνητα βρέθηκαν",
+        propertyFound: "ακίνητο βρέθηκε",
+        beds: "δωμ.",
+        baths: "μπάνια",
+        inquirySubject: "Ερώτηση για ακίνητο",
+        inquiryBody: "Γεια σας, ενδιαφέρομαι για αυτό το ακίνητο:"
+      },
+      en: {
+        pageTitle: "Real Estate Showcase",
+        langButton: "EL",
+        logoSubtitle: "Supabase Property CMS",
+        liveListings: "Live Listings",
+        heroEyebrow: "Premium Real Estate Showcase",
+        heroTitle: "Find your next luxury property.",
+        heroText: "Browse available properties with photos, prices, and details. This showcase updates automatically from Supabase without touching code.",
+        viewProperties: "View Properties",
+        featuredProperty: "Featured Property",
+        totalProperties: "Total Properties",
+        availableNow: "Available Now",
+        featuredListings: "Featured Listings",
+        featuredHeading: "Featured property",
+        featuredText: "The best property appears first in the showcase. In Supabase, set the <strong>featured</strong> field to true and it will appear here.",
+        listingsHeading: "Property listings",
+        listingsText: "Search, filters, and sorting make this feel like a real real-estate platform.",
+        searchPlaceholder: "Search by title or location...",
+        allStatuses: "All statuses",
+        available: "Available",
+        sold: "Sold",
+        rented: "Rented",
+        featuredFirst: "Featured first",
+        priceLow: "Price: low to high",
+        priceHigh: "Price: high to low",
+        loadingProperties: "Loading properties...",
+        loadingFeatured: "Loading featured property...",
+        noFeatured: "No featured property yet. Go to Supabase and set one property as featured.",
+        noProperties: "No properties found. Add more listings in Supabase or change your filters.",
+        couldNotLoad: "Could not load properties.",
+        couldNotLoadFeatured: "Could not load featured property.",
+        featuredBadge: "Featured",
+        featuredListing: "Featured Listing",
+        askProperty: "Ask for this property",
+        priceOnRequest: "Price on request",
+        unknownLocation: "Unknown location",
+        untitledProperty: "Untitled Property",
+        noDescription: "No description added yet.",
+        propertiesFound: "properties found",
+        propertyFound: "property found",
+        beds: "beds",
+        baths: "baths",
+        inquirySubject: "Property inquiry",
+        inquiryBody: "Hello, I am interested in this property:"
+      }
+    };
+
+    const valueTranslations = {
+      el: {
+        Available: "Διαθέσιμο",
+        Sold: "Πουλήθηκε",
+        Rented: "Ενοικιάστηκε",
+        Villa: "Βίλα",
+        Apartment: "Διαμέρισμα",
+        Maisonette: "Μεζονέτα",
+        Studio: "Στούντιο",
+        Land: "Οικόπεδο",
+        Commercial: "Επαγγελματικό",
+        "For Sale": "Προς Πώληση",
+        "For Rent": "Προς Ενοικίαση"
+      },
+      en: {
+        Available: "Available",
+        Sold: "Sold",
+        Rented: "Rented",
+        Villa: "Villa",
+        Apartment: "Apartment",
+        Maisonette: "Maisonette",
+        Studio: "Studio",
+        Land: "Land",
+        Commercial: "Commercial",
+        "For Sale": "For Sale",
+        "For Rent": "For Rent"
+      }
+    };
+
+    function t(key) {
+      return translations[currentLang][key];
+    }
+
+    function translateValue(value) {
+      return valueTranslations[currentLang][value] || value || "";
+    }
+
+    function applyLanguage() {
+      const selectedStatus = statusFilter.value;
+      const selectedSort = sortFilter.value;
+
+      document.documentElement.lang = currentLang;
+      document.title = t("pageTitle");
+
+      document.getElementById("logoSubtitle").textContent = t("logoSubtitle");
+      document.getElementById("liveListingsText").textContent = t("liveListings");
+      document.getElementById("heroEyebrow").textContent = t("heroEyebrow");
+      document.getElementById("heroTitle").textContent = t("heroTitle");
+      document.getElementById("heroText").textContent = t("heroText");
+      document.getElementById("viewPropertiesBtn").textContent = t("viewProperties");
+      document.getElementById("featuredPropertyBtn").textContent = t("featuredProperty");
+
+      document.getElementById("totalLabel").textContent = t("totalProperties");
+      document.getElementById("availableLabel").textContent = t("availableNow");
+      document.getElementById("featuredLabel").textContent = t("featuredListings");
+
+      document.getElementById("featuredHeading").textContent = t("featuredHeading");
+      document.getElementById("featuredText").innerHTML = t("featuredText");
+
+      document.getElementById("listingsHeading").textContent = t("listingsHeading");
+      document.getElementById("listingsText").textContent = t("listingsText");
+
+      searchInput.placeholder = t("searchPlaceholder");
+
+      statusFilter.innerHTML = `
+        <option value="all">${t("allStatuses")}</option>
+        <option value="Available">${t("available")}</option>
+        <option value="Sold">${t("sold")}</option>
+        <option value="Rented">${t("rented")}</option>
+      `;
+      statusFilter.value = selectedStatus;
+
+      sortFilter.innerHTML = `
+        <option value="featured">${t("featuredFirst")}</option>
+        <option value="price-low">${t("priceLow")}</option>
+        <option value="price-high">${t("priceHigh")}</option>
+      `;
+      sortFilter.value = selectedSort;
+
+      langBtn.textContent = t("langButton");
+
+      updateStats();
+      renderFeatured();
+      renderProperties();
+    }
 
     function formatPrice(price) {
       const number = Number(price);
 
       if (!number || Number.isNaN(number)) {
-        return "Price on request";
+        return t("priceOnRequest");
       }
 
-      return new Intl.NumberFormat("el-GR", {
+      return new Intl.NumberFormat(currentLang === "el" ? "el-GR" : "en-US", {
         style: "currency",
         currency: "EUR",
         maximumFractionDigits: 0
@@ -778,18 +989,18 @@
       if (!property) {
         featuredShowcase.innerHTML = `
           <div class="message">
-            No featured property yet. Go to Supabase and set one property as featured.
+            ${t("noFeatured")}
           </div>
         `;
         return;
       }
 
-      const title = escapeText(property.title || "Untitled Property");
-      const location = escapeText(property.location || "Unknown location");
-      const description = escapeText(property.description || "No description added yet.");
-      const status = escapeText(property.status || "Available");
-      const propertyType = escapeText(property.property_type || "");
-      const listingType = escapeText(property.listing_type || "");
+      const title = escapeText(property.title || t("untitledProperty"));
+      const location = escapeText(property.location || t("unknownLocation"));
+      const description = escapeText(property.description || t("noDescription"));
+      const status = escapeText(translateValue(property.status || "Available"));
+      const propertyType = escapeText(translateValue(property.property_type || ""));
+      const listingType = escapeText(translateValue(property.listing_type || ""));
       const size = escapeText(property.size || "");
       const imageUrl = getImageUrl(property);
 
@@ -800,7 +1011,7 @@
           </div>
 
           <div class="featured-content">
-            <div class="featured-label">Featured Listing</div>
+            <div class="featured-label">${t("featuredListing")}</div>
 
             <h3>${title}</h3>
 
@@ -810,8 +1021,8 @@
 
             <div class="meta">
               <span>${status}</span>
-              ${property.bedrooms ? `<span>🛏 ${property.bedrooms} beds</span>` : ""}
-              ${property.bathrooms ? `<span>🛁 ${property.bathrooms} baths</span>` : ""}
+              ${property.bedrooms ? `<span>🛏 ${property.bedrooms} ${t("beds")}</span>` : ""}
+              ${property.bathrooms ? `<span>🛁 ${property.bathrooms} ${t("baths")}</span>` : ""}
               ${size ? `<span>📐 ${size}</span>` : ""}
               ${propertyType ? `<span>${propertyType}</span>` : ""}
               ${listingType ? `<span>${listingType}</span>` : ""}
@@ -820,7 +1031,7 @@
             <p class="featured-desc">${description}</p>
 
             <button class="btn" onclick="contactProperty('${title}')">
-              Ask for this property
+              ${t("askProperty")}
             </button>
           </div>
         </article>
@@ -828,17 +1039,18 @@
     }
 
     function createPropertyCard(property) {
-      const title = escapeText(property.title || "Untitled Property");
-      const location = escapeText(property.location || "Unknown location");
-      const description = escapeText(property.description || "No description added yet.");
-      const status = escapeText(property.status || "Available");
-      const propertyType = escapeText(property.property_type || "");
-      const listingType = escapeText(property.listing_type || "");
+      const title = escapeText(property.title || t("untitledProperty"));
+      const location = escapeText(property.location || t("unknownLocation"));
+      const description = escapeText(property.description || t("noDescription"));
+      const rawStatus = property.status || "Available";
+      const status = escapeText(translateValue(rawStatus));
+      const propertyType = escapeText(translateValue(property.property_type || ""));
+      const listingType = escapeText(translateValue(property.listing_type || ""));
       const size = escapeText(property.size || "");
       const imageUrl = getImageUrl(property);
 
       const featuredBadge = property.featured
-        ? `<span class="badge">Featured</span>`
+        ? `<span class="badge">${t("featuredBadge")}</span>`
         : `<span></span>`;
 
       return `
@@ -847,7 +1059,7 @@
             <img src="${imageUrl}" alt="${title}" loading="lazy">
 
             <div class="badges">
-              <span class="badge ${getStatusClass(status)}">${status}</span>
+              <span class="badge ${getStatusClass(rawStatus)}">${status}</span>
               ${featuredBadge}
             </div>
           </div>
@@ -860,8 +1072,8 @@
             <p class="location">📍 ${location}</p>
 
             <div class="meta">
-              ${property.bedrooms ? `<span>🛏 ${property.bedrooms} beds</span>` : ""}
-              ${property.bathrooms ? `<span>🛁 ${property.bathrooms} baths</span>` : ""}
+              ${property.bedrooms ? `<span>🛏 ${property.bedrooms} ${t("beds")}</span>` : ""}
+              ${property.bathrooms ? `<span>🛁 ${property.bathrooms} ${t("baths")}</span>` : ""}
               ${size ? `<span>📐 ${size}</span>` : ""}
               ${propertyType ? `<span>${propertyType}</span>` : ""}
               ${listingType ? `<span>${listingType}</span>` : ""}
@@ -870,7 +1082,7 @@
             <p class="description">${description}</p>
 
             <button class="btn" onclick="contactProperty('${title}')">
-              Ask for this property
+              ${t("askProperty")}
             </button>
           </div>
         </article>
@@ -917,12 +1129,13 @@
         filtered.sort((a, b) => Number(b.price || 0) - Number(a.price || 0));
       }
 
-      statusText.textContent = `${filtered.length} propert${filtered.length === 1 ? "y" : "ies"} found`;
+      statusText.textContent =
+        `${filtered.length} ${filtered.length === 1 ? t("propertyFound") : t("propertiesFound")}`;
 
       if (filtered.length === 0) {
         propertiesGrid.innerHTML = `
           <div class="message">
-            No properties found. Add more listings in Supabase or change your filters.
+            ${t("noProperties")}
           </div>
         `;
         return;
@@ -932,9 +1145,9 @@
     }
 
     async function loadProperties() {
-      propertiesGrid.innerHTML = `<div class="message">Loading properties...</div>`;
-      featuredShowcase.innerHTML = `<div class="message">Loading featured property...</div>`;
-      statusText.textContent = "Loading properties...";
+      propertiesGrid.innerHTML = `<div class="message">${t("loadingProperties")}</div>`;
+      featuredShowcase.innerHTML = `<div class="message">${t("loadingFeatured")}</div>`;
+      statusText.textContent = t("loadingProperties");
 
       const { data, error } = await client
         .from("properties")
@@ -945,7 +1158,7 @@
       if (error) {
         console.error(error);
 
-        statusText.textContent = "Could not load properties.";
+        statusText.textContent = t("couldNotLoad");
 
         propertiesGrid.innerHTML = `
           <div class="message">
@@ -955,7 +1168,7 @@
 
         featuredShowcase.innerHTML = `
           <div class="message">
-            Could not load featured property.
+            ${t("couldNotLoadFeatured")}
           </div>
         `;
 
@@ -971,8 +1184,8 @@
 
     function contactProperty(title) {
       const email = "prestivate@gmail.com";
-      const subject = encodeURIComponent(`Property inquiry: ${title}`);
-      const body = encodeURIComponent(`Hello, I am interested in this property: ${title}`);
+      const subject = encodeURIComponent(`${t("inquirySubject")}: ${title}`);
+      const body = encodeURIComponent(`${t("inquiryBody")} ${title}`);
 
       window.location.href = `mailto:${email}?subject=${subject}&body=${body}`;
     }
@@ -989,10 +1202,17 @@
       });
     }
 
+    langBtn.addEventListener("click", () => {
+      currentLang = currentLang === "el" ? "en" : "el";
+      localStorage.setItem("prestige_lang", currentLang);
+      applyLanguage();
+    });
+
     searchInput.addEventListener("input", renderProperties);
     statusFilter.addEventListener("change", renderProperties);
     sortFilter.addEventListener("change", renderProperties);
 
+    applyLanguage();
     loadProperties();
   </script>
 </body>
