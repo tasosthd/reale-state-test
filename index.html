@@ -8,6 +8,13 @@
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+  />
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
   <link href="https://fonts.googleapis.com/css2?family=Geologica:wght@400;500;600;700;800;900&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
   <style>
@@ -429,6 +436,79 @@
       line-height: 1.6;
       max-width: 470px;
       font-weight: 600;
+    }
+
+    .map-showcase {
+      margin-bottom: 34px;
+      border-radius: 34px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      background: rgba(255, 255, 255, 0.72);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      padding: 16px;
+    }
+
+    #propertiesMap {
+      width: 100%;
+      height: 520px;
+      border-radius: 26px;
+      overflow: hidden;
+      background: linear-gradient(135deg, #c9f0f7, #ffffff);
+      z-index: 1;
+    }
+
+    .leaflet-popup-content-wrapper {
+      border-radius: 18px;
+      box-shadow: 0 18px 45px rgba(9, 48, 61, 0.18);
+    }
+
+    .map-popup {
+      width: 230px;
+      font-family: "Manrope", sans-serif;
+    }
+
+    .map-popup img {
+      width: 100%;
+      height: 120px;
+      object-fit: cover;
+      border-radius: 14px;
+      margin-bottom: 10px;
+    }
+
+    .map-popup h4 {
+      font-family: "Geologica", sans-serif;
+      font-size: 1rem;
+      line-height: 1.15;
+      letter-spacing: -0.04em;
+      margin-bottom: 6px;
+      color: var(--text);
+    }
+
+    .map-popup-price {
+      font-weight: 950;
+      color: var(--accent-dark);
+      margin-bottom: 6px;
+    }
+
+    .map-popup-location {
+      font-size: 0.82rem;
+      color: var(--muted);
+      font-weight: 750;
+      margin-bottom: 10px;
+    }
+
+    .map-popup button {
+      width: 100%;
+      border: none;
+      cursor: pointer;
+      padding: 10px 12px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, var(--accent), var(--accent-dark));
+      color: white;
+      font-weight: 900;
+      font-family: "Manrope", sans-serif;
     }
 
     .featured-showcase {
@@ -1015,6 +1095,10 @@
       .modal-map-section {
         padding: 0 26px 26px;
       }
+
+      #propertiesMap {
+        height: 440px;
+      }
     }
 
     @media (max-width: 640px) {
@@ -1098,6 +1182,16 @@
       .map-frame {
         height: 260px;
         border-radius: 20px;
+      }
+
+      #propertiesMap {
+        height: 360px;
+        border-radius: 20px;
+      }
+
+      .map-showcase {
+        border-radius: 26px;
+        padding: 10px;
       }
     }
   </style>
@@ -1196,6 +1290,20 @@
       </div>
     </section>
 
+    <section class="section-head" id="mapSection">
+      <div>
+        <h2 id="mapHeading">Χάρτης ακινήτων</h2>
+      </div>
+
+      <p id="mapText">
+        Δες όλα τα διαθέσιμα ακίνητα πάνω στον χάρτη και άνοιξε λεπτομέρειες με ένα κλικ.
+      </p>
+    </section>
+
+    <section class="map-showcase">
+      <div id="propertiesMap"></div>
+    </section>
+
     <section class="section-head" id="featuredSection">
       <div>
         <h2 id="featuredHeading">Προτεινόμενο ακίνητο</h2>
@@ -1288,6 +1396,8 @@
 
     let allProperties = [];
     let currentLang = localStorage.getItem("prestige_lang") || "el";
+    let propertiesMap = null;
+    let propertiesMarkersLayer = null;
 
     const translations = {
       el: {
@@ -1302,6 +1412,9 @@
         totalProperties: "Σύνολο Ακινήτων",
         availableNow: "Διαθέσιμα Τώρα",
         featuredListings: "Προτεινόμενες Καταχωρήσεις",
+        mapHeading: "Χάρτης ακινήτων",
+        mapText: "Δες όλα τα διαθέσιμα ακίνητα πάνω στον χάρτη και άνοιξε λεπτομέρειες με ένα κλικ.",
+        mapPopupDetails: "Προβολή λεπτομερειών",
         featuredHeading: "Προτεινόμενο ακίνητο",
         featuredText: "Το καλύτερο ακίνητο μπαίνει πρώτο στη βιτρίνα. Στο Supabase κάνε το πεδίο <strong>featured</strong> true και θα εμφανιστεί εδώ.",
         listingsHeading: "Λίστα ακινήτων",
@@ -1366,6 +1479,9 @@
         totalProperties: "Total Properties",
         availableNow: "Available Now",
         featuredListings: "Featured Listings",
+        mapHeading: "Property map",
+        mapText: "Explore every listed property on the map and open full details with one click.",
+        mapPopupDetails: "View details",
         featuredHeading: "Featured property",
         featuredText: "The best property appears first in the showcase. In Supabase, set the <strong>featured</strong> field to true and it will appear here.",
         listingsHeading: "Property listings",
@@ -1480,6 +1596,9 @@
       document.getElementById("availableLabel").textContent = t("availableNow");
       document.getElementById("featuredLabel").textContent = t("featuredListings");
 
+      document.getElementById("mapHeading").textContent = t("mapHeading");
+      document.getElementById("mapText").textContent = t("mapText");
+
       document.getElementById("featuredHeading").textContent = t("featuredHeading");
       document.getElementById("featuredText").innerHTML = t("featuredText");
 
@@ -1523,6 +1642,7 @@
       updateStats();
       renderFeatured();
       renderProperties();
+      renderPropertiesMap();
     }
 
     function formatPrice(price) {
@@ -1761,6 +1881,98 @@
       propertiesGrid.innerHTML = filtered.map(createPropertyCard).join("");
     }
 
+    function initPropertiesMap() {
+      if (propertiesMap) {
+        return;
+      }
+
+      propertiesMap = L.map("propertiesMap", {
+        scrollWheelZoom: false
+      }).setView([40.6401, 22.9444], 7);
+
+      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+        maxZoom: 19,
+        attribution: "&copy; OpenStreetMap contributors"
+      }).addTo(propertiesMap);
+
+      propertiesMarkersLayer = L.layerGroup().addTo(propertiesMap);
+
+      setTimeout(() => {
+        propertiesMap.invalidateSize();
+      }, 200);
+    }
+
+    function renderPropertiesMap() {
+      const mapElement = document.getElementById("propertiesMap");
+
+      if (!mapElement || typeof L === "undefined") {
+        return;
+      }
+
+      initPropertiesMap();
+
+      if (!propertiesMarkersLayer) {
+        return;
+      }
+
+      propertiesMarkersLayer.clearLayers();
+
+      const validProperties = allProperties.filter((property) => {
+        const latitude = Number(property.latitude);
+        const longitude = Number(property.longitude);
+
+        return Number.isFinite(latitude) && Number.isFinite(longitude);
+      });
+
+      if (validProperties.length === 0) {
+        propertiesMap.setView([40.6401, 22.9444], 7);
+        return;
+      }
+
+      const bounds = [];
+
+      validProperties.forEach((property) => {
+        const latitude = Number(property.latitude);
+        const longitude = Number(property.longitude);
+        const title = escapeText(property.title || t("untitledProperty"));
+        const location = escapeText(property.location || t("unknownLocation"));
+        const imageUrl = getImageUrl(property);
+        const propertyId = escapeText(property.id);
+
+        const popupHTML = `
+          <div class="map-popup">
+            <img src="${imageUrl}" alt="${title}">
+            <h4>${title}</h4>
+            <div class="map-popup-price">${formatPrice(property.price)}</div>
+            <div class="map-popup-location">📍 ${location}</div>
+            <button type="button" onclick="openPropertyModal('${propertyId}')">
+              ${t("mapPopupDetails")}
+            </button>
+          </div>
+        `;
+
+        const marker = L.marker([latitude, longitude])
+          .bindPopup(popupHTML, {
+            maxWidth: 260
+          });
+
+        marker.addTo(propertiesMarkersLayer);
+        bounds.push([latitude, longitude]);
+      });
+
+      if (bounds.length === 1) {
+        propertiesMap.setView(bounds[0], 15);
+      } else {
+        propertiesMap.fitBounds(bounds, {
+          padding: [40, 40]
+        });
+      }
+
+      setTimeout(() => {
+        propertiesMap.invalidateSize();
+      }, 200);
+    }
+
     async function loadProperties() {
       propertiesGrid.innerHTML = `<div class="message">${t("loadingProperties")}</div>`;
       featuredShowcase.innerHTML = `<div class="message">${t("loadingFeatured")}</div>`;
@@ -1797,6 +2009,7 @@
       updateStats();
       renderFeatured();
       renderProperties();
+      renderPropertiesMap();
     }
 
     function contactProperty(title) {
@@ -1951,6 +2164,14 @@
     document.addEventListener("keydown", (event) => {
       if (event.key === "Escape") {
         closePropertyModal();
+      }
+    });
+
+    window.addEventListener("resize", () => {
+      if (propertiesMap) {
+        setTimeout(() => {
+          propertiesMap.invalidateSize();
+        }, 150);
       }
     });
 
