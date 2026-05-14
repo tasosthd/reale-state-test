@@ -438,79 +438,6 @@
       font-weight: 600;
     }
 
-    .map-showcase {
-      margin-bottom: 34px;
-      border-radius: 34px;
-      overflow: hidden;
-      border: 1px solid var(--border);
-      background: rgba(255, 255, 255, 0.72);
-      box-shadow: var(--shadow);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      padding: 16px;
-    }
-
-    #propertiesMap {
-      width: 100%;
-      height: 520px;
-      border-radius: 26px;
-      overflow: hidden;
-      background: linear-gradient(135deg, #c9f0f7, #ffffff);
-      z-index: 1;
-    }
-
-    .leaflet-popup-content-wrapper {
-      border-radius: 18px;
-      box-shadow: 0 18px 45px rgba(9, 48, 61, 0.18);
-    }
-
-    .map-popup {
-      width: 230px;
-      font-family: "Manrope", sans-serif;
-    }
-
-    .map-popup img {
-      width: 100%;
-      height: 120px;
-      object-fit: cover;
-      border-radius: 14px;
-      margin-bottom: 10px;
-    }
-
-    .map-popup h4 {
-      font-family: "Geologica", sans-serif;
-      font-size: 1rem;
-      line-height: 1.15;
-      letter-spacing: -0.04em;
-      margin-bottom: 6px;
-      color: var(--text);
-    }
-
-    .map-popup-price {
-      font-weight: 950;
-      color: var(--accent-dark);
-      margin-bottom: 6px;
-    }
-
-    .map-popup-location {
-      font-size: 0.82rem;
-      color: var(--muted);
-      font-weight: 750;
-      margin-bottom: 10px;
-    }
-
-    .map-popup button {
-      width: 100%;
-      border: none;
-      cursor: pointer;
-      padding: 10px 12px;
-      border-radius: 12px;
-      background: linear-gradient(135deg, var(--accent), var(--accent-dark));
-      color: white;
-      font-weight: 900;
-      font-family: "Manrope", sans-serif;
-    }
-
     .featured-showcase {
       margin-bottom: 34px;
     }
@@ -634,7 +561,7 @@
       display: grid;
       grid-template-columns: repeat(3, 1fr);
       gap: 22px;
-      padding-bottom: 70px;
+      padding-bottom: 34px;
     }
 
     .card {
@@ -807,6 +734,79 @@
       color: var(--muted);
       font-weight: 850;
       box-shadow: var(--shadow);
+    }
+
+    .map-showcase {
+      margin-bottom: 70px;
+      border-radius: 34px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      background: rgba(255, 255, 255, 0.72);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      padding: 16px;
+    }
+
+    #propertiesMap {
+      width: 100%;
+      height: 520px;
+      border-radius: 26px;
+      overflow: hidden;
+      background: linear-gradient(135deg, #c9f0f7, #ffffff);
+      z-index: 1;
+    }
+
+    .leaflet-popup-content-wrapper {
+      border-radius: 18px;
+      box-shadow: 0 18px 45px rgba(9, 48, 61, 0.18);
+    }
+
+    .map-popup {
+      width: 230px;
+      font-family: "Manrope", sans-serif;
+    }
+
+    .map-popup img {
+      width: 100%;
+      height: 120px;
+      object-fit: cover;
+      border-radius: 14px;
+      margin-bottom: 10px;
+    }
+
+    .map-popup h4 {
+      font-family: "Geologica", sans-serif;
+      font-size: 1rem;
+      line-height: 1.15;
+      letter-spacing: -0.04em;
+      margin-bottom: 6px;
+      color: var(--text);
+    }
+
+    .map-popup-price {
+      font-weight: 950;
+      color: var(--accent-dark);
+      margin-bottom: 6px;
+    }
+
+    .map-popup-location {
+      font-size: 0.82rem;
+      color: var(--muted);
+      font-weight: 750;
+      margin-bottom: 10px;
+    }
+
+    .map-popup button {
+      width: 100%;
+      border: none;
+      cursor: pointer;
+      padding: 10px 12px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, var(--accent), var(--accent-dark));
+      color: white;
+      font-weight: 900;
+      font-family: "Manrope", sans-serif;
     }
 
     .modal-overlay {
@@ -1240,7 +1240,7 @@
               <a href="#listingsSection" data-nav-all>Όλα τα ακίνητα</a>
               <a href="#listingsSection" data-nav-homes>Κατοικίες</a>
               <a href="#listingsSection" data-nav-commercial>Επαγγελματικά</a>
-              <a href="#listingsSection" data-nav-land>Γη</a>
+              <a href="#mapSection" data-nav-land>Χάρτης</a>
             </div>
           </div>
 
@@ -1288,20 +1288,6 @@
         <strong id="featuredCount">0</strong>
         <span id="featuredLabel">Προτεινόμενες Καταχωρήσεις</span>
       </div>
-    </section>
-
-    <section class="section-head" id="mapSection">
-      <div>
-        <h2 id="mapHeading">Χάρτης ακινήτων</h2>
-      </div>
-
-      <p id="mapText">
-        Δες όλα τα διαθέσιμα ακίνητα πάνω στον χάρτη και άνοιξε λεπτομέρειες με ένα κλικ.
-      </p>
-    </section>
-
-    <section class="map-showcase">
-      <div id="propertiesMap"></div>
     </section>
 
     <section class="section-head" id="featuredSection">
@@ -1355,6 +1341,20 @@
 
     <section class="grid" id="propertiesGrid">
       <div class="message">Φόρτωση ακινήτων...</div>
+    </section>
+
+    <section class="section-head" id="mapSection">
+      <div>
+        <h2 id="mapHeading">Χάρτης ακινήτων</h2>
+      </div>
+
+      <p id="mapText">
+        Δες όλα τα διαθέσιμα ακίνητα πάνω στον χάρτη και άνοιξε λεπτομέρειες με ένα κλικ.
+      </p>
+    </section>
+
+    <section class="map-showcase">
+      <div id="propertiesMap"></div>
     </section>
 
   </main>
@@ -1460,7 +1460,7 @@
         navAll: "Όλα τα ακίνητα",
         navHomes: "Κατοικίες",
         navCommercial: "Επαγγελματικά",
-        navLand: "Γη",
+        navLand: "Χάρτης",
         navSale: "Πώληση",
         navRent: "Ενοικίαση",
         navEstimate: "Δωρεάν εκτίμηση",
@@ -1527,7 +1527,7 @@
         navAll: "All properties",
         navHomes: "Homes",
         navCommercial: "Commercial",
-        navLand: "Land",
+        navLand: "Map",
         navSale: "Sale",
         navRent: "Rent",
         navEstimate: "Free valuation",
@@ -1734,11 +1734,7 @@
 
     function createFeaturedProperty(property) {
       if (!property) {
-        featuredShowcase.innerHTML = `
-          <div class="message">
-            ${t("noFeatured")}
-          </div>
-        `;
+        featuredShowcase.innerHTML = `<div class="message">${t("noFeatured")}</div>`;
         return;
       }
 
@@ -1756,15 +1752,10 @@
 
           <div class="featured-content">
             <div class="featured-label">${t("featuredListing")}</div>
-
             <h3>${title}</h3>
-
             <div class="featured-price">${formatPrice(property.price)}</div>
-
             <div class="featured-location">📍 ${location}</div>
-
             ${createMetaHTML(property)}
-
             <p class="featured-desc">${description}</p>
 
             <div class="featured-actions">
@@ -1807,13 +1798,9 @@
 
           <div class="content">
             <div class="price">${formatPrice(property.price)}</div>
-
             <h2 class="title">${title}</h2>
-
             <p class="location">📍 ${location}</p>
-
             ${createMetaHTML(property)}
-
             <p class="description">${description}</p>
 
             <div class="card-actions">
@@ -1870,11 +1857,7 @@
         `${filtered.length} ${filtered.length === 1 ? t("propertyFound") : t("propertiesFound")}`;
 
       if (filtered.length === 0) {
-        propertiesGrid.innerHTML = `
-          <div class="message">
-            ${t("noProperties")}
-          </div>
-        `;
+        propertiesGrid.innerHTML = `<div class="message">${t("noProperties")}</div>`;
         return;
       }
 
@@ -1899,7 +1882,7 @@
 
       setTimeout(() => {
         propertiesMap.invalidateSize();
-      }, 200);
+      }, 300);
     }
 
     function renderPropertiesMap() {
@@ -1951,10 +1934,9 @@
           </div>
         `;
 
-        const marker = L.marker([latitude, longitude])
-          .bindPopup(popupHTML, {
-            maxWidth: 260
-          });
+        const marker = L.marker([latitude, longitude]).bindPopup(popupHTML, {
+          maxWidth: 260
+        });
 
         marker.addTo(propertiesMarkersLayer);
         bounds.push([latitude, longitude]);
@@ -1970,7 +1952,7 @@
 
       setTimeout(() => {
         propertiesMap.invalidateSize();
-      }, 200);
+      }, 300);
     }
 
     async function loadProperties() {
@@ -2078,15 +2060,10 @@
 
           <div class="modal-content">
             <div class="modal-label">${t("modalLabel")}</div>
-
             <h3 id="modalTitle">${title}</h3>
-
             <div class="modal-price">${formatPrice(property.price)}</div>
-
             <div class="modal-location">📍 ${location}</div>
-
             ${createMetaHTML(property)}
-
             <p class="modal-description">${description}</p>
 
             <div class="modal-actions">
