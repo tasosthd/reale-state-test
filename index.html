@@ -21,14 +21,12 @@
       --bg: #eef8fb;
       --bg-2: #dff4f8;
       --card: rgba(255, 255, 255, 0.72);
-      --card-strong: rgba(255, 255, 255, 0.9);
       --text: #0b2028;
       --muted: #63777f;
       --accent: #00a8c8;
       --accent-dark: #006f86;
       --gold: #c89542;
       --danger: #d94141;
-      --success: #16a56f;
       --border: rgba(255, 255, 255, 0.75);
       --shadow: 0 28px 90px rgba(9, 48, 61, 0.16);
       --shadow-soft: 0 16px 45px rgba(9, 48, 61, 0.1);
@@ -748,13 +746,13 @@
     }
 
     .property-modal {
-      width: min(1040px, 100%);
-      max-height: min(880px, 92vh);
+      width: min(1080px, 100%);
+      max-height: min(900px, 92vh);
       overflow: auto;
       border-radius: 34px;
       background:
         radial-gradient(circle at top left, rgba(0, 188, 220, 0.12), transparent 32%),
-        rgba(255, 255, 255, 0.9);
+        rgba(255, 255, 255, 0.92);
       border: 1px solid rgba(255, 255, 255, 0.76);
       box-shadow: 0 34px 120px rgba(0, 0, 0, 0.28);
       position: relative;
@@ -871,6 +869,35 @@
       margin-top: 6px;
     }
 
+    .modal-map-section {
+      padding: 0 34px 34px;
+    }
+
+    .map-title {
+      font-family: "Geologica", sans-serif;
+      font-size: 1.45rem;
+      font-weight: 950;
+      letter-spacing: -0.05em;
+      margin-bottom: 14px;
+      color: var(--text);
+    }
+
+    .map-frame {
+      width: 100%;
+      height: 330px;
+      border: 0;
+      border-radius: 24px;
+      box-shadow: 0 18px 48px rgba(9, 48, 61, 0.14);
+      background: linear-gradient(135deg, #c9f0f7, #ffffff);
+      display: block;
+    }
+
+    .map-actions {
+      margin-top: 14px;
+      display: grid;
+      grid-template-columns: 1fr;
+    }
+
     @media (max-width: 1180px) {
       .nav-link,
       .nav-cta {
@@ -984,6 +1011,10 @@
       .modal-content {
         padding: 26px;
       }
+
+      .modal-map-section {
+        padding: 0 26px 26px;
+      }
     }
 
     @media (max-width: 640px) {
@@ -1062,6 +1093,11 @@
       .modal-close {
         top: 10px;
         right: 10px;
+      }
+
+      .map-frame {
+        height: 260px;
+        border-radius: 20px;
       }
     }
   </style>
@@ -1289,6 +1325,8 @@
         viewDetails: "Προβολή λεπτομερειών",
         emailAction: "Email",
         whatsappAction: "WhatsApp",
+        mapTitle: "Τοποθεσία ακινήτου",
+        viewMap: "Άνοιγμα στο Google Maps",
         priceOnRequest: "Τιμή κατόπιν ζήτησης",
         unknownLocation: "Άγνωστη τοποθεσία",
         untitledProperty: "Ακίνητο χωρίς τίτλο",
@@ -1351,6 +1389,8 @@
         viewDetails: "View details",
         emailAction: "Email",
         whatsappAction: "WhatsApp",
+        mapTitle: "Property location",
+        viewMap: "Open in Google Maps",
         priceOnRequest: "Price on request",
         unknownLocation: "Unknown location",
         untitledProperty: "Untitled Property",
@@ -1523,6 +1563,22 @@
 
     function getImageUrl(property) {
       return property.image_url || getFallbackImage();
+    }
+
+    function getMapEmbedUrl(property) {
+      const value = String(property.map_embed_url || "").trim();
+
+      if (!value) {
+        return "";
+      }
+
+      const srcMatch = value.match(/src=["']([^"']+)["']/i);
+
+      if (srcMatch && srcMatch[1]) {
+        return srcMatch[1];
+      }
+
+      return value;
     }
 
     function updateStats() {
@@ -1756,6 +1812,11 @@
       window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${message}`, "_blank");
     }
 
+    function openMapUrl(url) {
+      if (!url) return;
+      window.open(url, "_blank");
+    }
+
     function openPropertyModal(propertyId) {
       const property = allProperties.find((item) => item.id === propertyId);
 
@@ -1765,6 +1826,36 @@
       const location = escapeText(property.location || t("unknownLocation"));
       const description = escapeText(property.description || t("noDescription"));
       const imageUrl = getImageUrl(property);
+      const mapEmbedUrl = escapeText(getMapEmbedUrl(property));
+      const mapUrl = escapeText(property.map_url || "");
+
+      const mapHTML = mapEmbedUrl || mapUrl
+        ? `
+          <div class="modal-map-section">
+            <h4 class="map-title">${t("mapTitle")}</h4>
+
+            ${mapEmbedUrl
+              ? `<iframe
+                  class="map-frame"
+                  src="${mapEmbedUrl}"
+                  loading="lazy"
+                  allowfullscreen
+                  referrerpolicy="no-referrer-when-downgrade">
+                </iframe>`
+              : ""
+            }
+
+            ${mapUrl
+              ? `<div class="map-actions">
+                  <button class="btn secondary-btn" onclick="openMapUrl('${mapUrl}')">
+                    ${t("viewMap")}
+                  </button>
+                </div>`
+              : ""
+            }
+          </div>
+        `
+        : "";
 
       modalContent.innerHTML = `
         <div class="modal-grid">
@@ -1796,6 +1887,8 @@
             </div>
           </div>
         </div>
+
+        ${mapHTML}
       `;
 
       propertyModalOverlay.classList.add("active");
