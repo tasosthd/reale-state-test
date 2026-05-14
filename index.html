@@ -826,20 +826,60 @@
 <body>
   <main class="page">
 
-    <nav class="topbar">
-      <div class="logo">
-        <div class="logo-mark">⌂</div>
-        <div>
-          <div>Prestige Realty</div>
-          <small id="logoSubtitle" style="color: var(--muted); font-weight: 800;">Supabase Property CMS</small>
+    <nav class="site-navbar">
+  <div class="nav-inner">
+    <a class="nav-logo" href="#">
+      <div class="logo-mark">⌂</div>
+      <div>
+        <div class="nav-brand">Prestige Realty</div>
+        <small id="logoSubtitle">Supabase Property CMS</small>
+      </div>
+    </a>
+
+    <button class="nav-toggle" id="navToggle" type="button" aria-label="Open navigation">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+
+    <div class="nav-menu" id="navMenu">
+      <div class="nav-item has-dropdown">
+        <button class="nav-link" type="button">
+          <span data-nav-company>Η Εταιρεία</span>
+          <span class="chevron">⌄</span>
+        </button>
+
+        <div class="dropdown">
+          <a href="#" data-nav-about>Ποιοι είμαστε</a>
+          <a href="#" data-nav-services>Οι Υπηρεσίες</a>
+          <a href="#" data-nav-golden>Golden Visa</a>
         </div>
       </div>
 
-      <div class="top-actions">
-        <div class="pill" id="liveListingsText">Live Listings</div>
-        <button class="lang-btn" id="langBtn" type="button">EN</button>
+      <div class="nav-item has-dropdown">
+        <button class="nav-link" type="button">
+          <span data-nav-properties>Ακίνητα</span>
+          <span class="chevron">⌄</span>
+        </button>
+
+        <div class="dropdown">
+          <a href="#listingsSection" data-nav-all>Όλα τα ακίνητα</a>
+          <a href="#listingsSection" data-nav-homes>Κατοικίες</a>
+          <a href="#listingsSection" data-nav-commercial>Επαγγελματικά</a>
+          <a href="#listingsSection" data-nav-land>Γη</a>
+        </div>
       </div>
-    </nav>
+
+      <a class="nav-link" href="#listingsSection" data-nav-sale>Πώληση</a>
+      <a class="nav-link" href="#listingsSection" data-nav-rent>Ενοικίαση</a>
+      <a class="nav-link" href="#featuredSection" data-nav-estimate>Δωρεάν εκτίμηση</a>
+      <a class="nav-link" href="#listingsSection" data-nav-request>Ζήτηση</a>
+      <a class="nav-cta" href="mailto:prestivate@gmail.com" data-nav-contact>Επικοινωνία</a>
+
+      <button class="lang-btn nav-lang" id="langBtn" type="button">EN</button>
+    </div>
+  </div>
+</nav>
 
     <section class="hero">
       <div class="hero-content">
